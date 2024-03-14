@@ -59,25 +59,25 @@ func (store Store) PrintInventory() {
 	fmt.Println()
 }
 
-func (store Store) SellProduct(name string, quantity int) (int, error) {
-	product, ok := store.inventory[name]
+func (s Store) SellProduct(name string, quantity int) (int, error) {
+	p, ok := s.inventory[name]
 	if !ok {
 		return 0, fmt.Errorf("product %v not found", name)
 	}
 
-	if product.Stock > quantity {
-		return product.Stock, fmt.Errorf("not enough stock. %v %v requested but only %v in stock", quantity, name, product.Stock)
+	if p.Stock > quantity {
+		return p.Stock, fmt.Errorf("not enough stock. %v %v requested but only %v in stock", quantity, name, p.Stock)
 	}
 
-	product.Stock -= quantity
+	p.Stock -= quantity
 
-	return product.Stock, nil
+	return p.Stock, nil
 }
 
 func (store Store) StockValue() float64 {
 	total := 0.0
-	for _, item := range store.inventory {
-		total += item.Price * float64(item.Stock)
+	for _, price := range store.inventory {
+		total += price.Price * float64(price.Stock)
 	}
 	return total
 }
