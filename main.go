@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 )
 
 func main() {
@@ -29,7 +30,8 @@ func main() {
 	// Print the updated inventory
 	store.PrintInventory()
 	value := store.StockValue()
-	fmt.Println(value)
+	fmt.Println("this is the value", value)
+	fmt.Printf("%.2f\n", value)
 }
 
 type Product struct {
@@ -44,7 +46,7 @@ type Store struct {
 }
 
 func (store Store) HasItem(itemName string) bool {
-	if store.inventory[itemName].Stock >= 0 {
+	if store.inventory[itemName].Stock > 0 {
 		return true
 	} else {
 		return false
@@ -69,7 +71,11 @@ func (s Store) SellProduct(name string, quantity int) (int, error) {
 		return p.Stock, fmt.Errorf("not enough stock. %v %v requested but only %v in stock", quantity, name, p.Stock)
 	}
 
+	// Reduce the stock of the product
 	p.Stock -= quantity
+
+	// Update the product in the inventory map
+	s.inventory[name] = p
 
 	return p.Stock, nil
 }
@@ -79,5 +85,6 @@ func (store Store) StockValue() float64 {
 	for _, price := range store.inventory {
 		total += price.Price * float64(price.Stock)
 	}
+	total = math.Round(total*10) / 10
 	return total
 }
